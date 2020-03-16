@@ -28,7 +28,7 @@ header  = readheader(snapshot1,'header')
 Nhalo1 = header['ndm']
 Ngas1  = header['ngas']
 Ndisk1 = header['ndisk']
-Nbulge1s = header['nbulge']
+Nbulge1 = header['nbulge']
 
 #dark matter halo:
 
@@ -46,19 +46,21 @@ vzhalo1 = velhalo1[:, 2]
 
 #gas:
 
-gas = False
-if(Ngas1>0):
-    gas=True
+gas1 = False
+if Ngas1 > 0:
+    gas1 = True
 
-if (gas):
+if gas1:
     posgas1 = readsnap(snapshot1,'pos','gas')
     velgas1 = readsnap(snapshot1,'vel','gas')
     mgas1   = readsnap(snapshot1,'mass','gas')
     u1      = readsnap(snapshot1,'u'  ,'gas')
     rho1    = readsnap(snapshot1,'rho','gas')
+
     xgas1   = posgas1[:, 0]
     ygas1   = posgas1[:, 1]
     zgas1   = posgas1[:, 2]
+
     vxgas1  = velgas1[:, 0]
     vygas1  = velgas1[:, 1]
     vzgas1  = velgas1[:, 2]
@@ -79,17 +81,22 @@ vzdisk1 = veldisk1[:, 2]
 
 #bulge:
 
-posbulge1 = readsnap(snapshot1, 'pos', 'bulge')
-velbulge1 = readsnap(snapshot1, 'pos', 'bulge')
-mbulge1 = readnsnap(snapshot1, 'pos', 'bulge')
+bulge1 = False
+if Nbulge1 > 0:
+    bulge1 = True
 
-xbulge1 = posbulge1[:, 0]
-ybulge1 = posbulge1[:, 1]
-zbulge1 = posbulge1[:, 2]
+if bulge:
+    posbulge1 = readsnap(snapshot1, 'pos', 'bulge')
+    velbulge1 = readsnap(snapshot1, 'vel', 'bulge')
+    mbulge1 = readsnap(snapshot1, 'mass', 'bulge')
 
-vxbulge1 = velbulge1[:, 0]
-vybulge1 = velbulge1[:, 1]
-vzbulge1 = velbulge1[:, 2]
+    xbulge1 = posbulge1[:, 0]
+    ybulge1 = posbulge1[:, 1]
+    zbulge1 = posbulge1[:, 2]
+
+    vxbulge1 = velbulge1[:, 0]
+    vybulge1 = velbulge1[:, 1]
+    vzbulge1 = velbulge1[:, 2]
 
 #-------------------------------------------------
 #read input file 2
@@ -114,9 +121,9 @@ vzhalo2 = velhalo2[:, 2]
 
 #gas:
 
-gas = False
-if(Ngas2>0):
-    gas=True
+gas2 = False
+if Ngas2 > 0:
+    gas2 = True
 
 if (gas):
     posgas2 = readsnap(snapshot2,'pos','gas')
@@ -146,17 +153,38 @@ vzdisk2 = veldisk2[:, 2]
 
 #bulge:
 
-posbulge2 = readsnap(snapshot2, 'pos', 'bulge')
-velbulge2 = readsnap(snapshot2, 'pos', 'bulge')
-mbulge2 = readnsnap(snapshot2, 'pos', 'bulge')
+bulge2 = False
+if Nbulge2 > 0:
+    bulge2 = True
 
-xbulge2 = posbulge2[:, 0]
-ybulge2 = posbulge2[:, 1]
-zbulge2 = posbulge2[:, 2]
+if bulge:
+    posbulge2 = readsnap(snapshot2, 'pos', 'bulge')
+    velbulge2 = readsnap(snapshot2, 'vel', 'bulge')
+    mbulge2 = readsnap(snapshot2, 'mass', 'bulge')
 
-vxbulge2 = velbulge2[:, 0]
-vybulge2 = velbulge2[:, 1]
-vzbulge2 = velbulge2[:, 2]
+    xbulge2 = posbulge2[:, 0]
+    ybulge2 = posbulge2[:, 1]
+    zbulge2 = posbulge2[:, 2]
+
+    vxbulge2 = velbulge2[:, 0]
+    vybulge2 = velbulge2[:, 1]
+    vzbulge2 = velbulge2[:, 2]
+
+#-------------------------------------------------
+
+gas = False
+if gas1 & gas2:
+    gas = True
+
+else:
+    print("Uma das galáxias não tem gás")
+
+bulge = False
+if bulge1 & bulge2:
+    bulge = True
+
+else:
+    print("Uma das galáxias não tem bojo")
 
 #-------------------------------------------------
 #shift positions and velocities:
@@ -172,7 +200,7 @@ vzhalo2 = vzhalo2 + float(Dvz)
 
 #gas:
 
-if (gas):
+if gas2:
     xgas2  = xgas2  + float(Dx)
     ygas2  = ygas2  + float(Dy)
     zgas2  = zgas2  + float(Dz)
@@ -191,12 +219,13 @@ vzdisk2 = vzdisk2 + float(Dvz)
 
 #bulge:
 
-xbulge2  = xbulge2  + float(Dx)
-ybulge2  = ybulge2  + float(Dy)
-zbulge2  = zbulge2  + float(Dz)
-vxbulge2 = vxbulge2 + float(Dvx)
-vybulge2 = vybulge2 + float(Dvy)
-vzbulge2 = vzbulge2 + float(Dvz)
+if bulge2:
+    xbulge2  = xbulge2  + float(Dx)
+    ybulge2  = ybulge2  + float(Dy)
+    zbulge2  = zbulge2  + float(Dz)
+    vxbulge2 = vxbulge2 + float(Dvx)
+    vybulge2 = vybulge2 + float(Dvy)
+    vzbulge2 = vzbulge2 + float(Dvz)
 
 #-------------------------------------------------
 #join
@@ -212,29 +241,6 @@ vxhalo = concatenate([vxhalo1, vxhalo2])
 vyhalo = concatenate([vyhalo1, vyhalo2])
 vzhalo = concatenate([vzhalo1, vzhalo2])
 
-#gas:
-
-if (gas):
-    Ngas   = Ngas1 + Ngas2
-    mgas = concatenate([mgas1, mgas2])
-    xgas = concatenate([xgas1, xgas2])
-    ygas = concatenate([ygas1, ygas2])
-    zgas = concatenate([zgas1, zgas2])
-    vxgas = concatenate([vxgas1, vxgas2])
-    vygas = concatenate([vygas1, vygas2])
-    vzgas = concatenate([vzgas1, vzgas2])
-    u     = concatenate([u1, u2])
-    rho   = concatenate([rho1, rho2])
-
-if (gas):
-    m  = concatenate([mgas,  mhalo, mdisk])
-    x  = concatenate([xgas,  xhalo,  xdisk])
-    y  = concatenate([ygas,  yhalo,  ydisk])
-    z  = concatenate([zgas,  zhalo,  zdisk])
-    vx = concatenate([vxgas, vxhalo, vxdisk])
-    vy = concatenate([vygas, vyhalo, vydisk])
-    vz = concatenate([vzgas, vzhalo, vzdisk])
-
 #disk:
 
 Ndisk   = Ndisk1 + Ndisk2
@@ -246,126 +252,107 @@ vxdisk = concatenate([vxdisk1, vxdisk2])
 vydisk = concatenate([vydisk1, vydisk2])
 vzdisk = concatenate([vzdisk1, vzdisk2])
 
+#gas:
+
+if gas & bulge:
+    Ngas   = Ngas1 + Ngas2
+    mgas = concatenate([mgas1, mgas2])
+    xgas = concatenate([xgas1, xgas2])
+    ygas = concatenate([ygas1, ygas2])
+    zgas = concatenate([zgas1, zgas2])
+    vxgas = concatenate([vxgas1, vxgas2])
+    vygas = concatenate([vygas1, vygas2])
+    vzgas = concatenate([vzgas1, vzgas2])
+    u     = concatenate([u1, u2])
+    rho   = concatenate([rho1, rho2])
+
+    m  = concatenate([mgas, mhalo, mdisk, mbulge])
+    x  = concatenate([xgas, xhalo,  xdisk, xbulge])
+    y  = concatenate([ygas, yhalo,  ydisk, ybulge])
+    z  = concatenate([zgas, zhalo,  zdisk, zbulge])
+    vx = concatenate([vxgas, vxhalo, vxdisk, vxbulge])
+    vy = concatenate([vygas, vyhalo, vydisk, vybulge])
+    vz = concatenate([vzgas, vzhalo, vzdisk, vzbulge])
+
 #bulge:
 
-Nbulge   = Nbulge1 + Nbulge2
-mbulge = concatenate([mbulge1, mbulge2])
-xbulge = concatenate([xbulge1, xbulge2])
-ybulge = concatenate([ybulge1, ybulge2])
-zbulge = concatenate([zbulge1, zbulge2])
-vxbulge = concatenate([vxbulge1, vxbulge2])
-vybulge = concatenate([vybulge1, vybulge2])
-vzbulge = concatenate([vzbulge1, vzbulge2])
+if bulge:
+    Nbulge   = Nbulge1 + Nbulge2
+    mbulge = concatenate([mbulge1, mbulge2])
+    xbulge = concatenate([xbulge1, xbulge2])
+    ybulge = concatenate([ybulge1, ybulge2])
+    zbulge = concatenate([zbulge1, zbulge2])
+    vxbulge = concatenate([vxbulge1, vxbulge2])
+    vybulge = concatenate([vybulge1, vybulge2])
+    vzbulge = concatenate([vzbulge1, vzbulge2])
+
+    m = concantenate([mhalo, mdisk, mbulge])
+    x = concatenate([xhalo, xdisk, xbulge])
+    y = concatenate([yhalo, ydisk, ybulge])
+    z = concatenate([zhalo, zdisk, zbulge])
+    vx = concatenate([vxhalo, vxdisk, vxbulge])
+    vy = concatenate([vyhalo, vydisk, vybulge])
+    vz = concatenate([vzhalo, vzdisk, vzbulge])
+
+else:
+    m = concatenate([mhalo, mdisk])
+    x = concatenate([xhalo, xdisk])
+    y = concatenate([yhalo, ydisk])
+    z = concatenate([zhalo, zdisk])
+    vx = concatenate([vxhalo, vxdisk])
+    vy = concatenate([vyhalo, vydisk])
+    vz = concatenate([vzhalo, vzdisk])
 
 #-------------------------------------------------
 #shift to COM
 
-#dark matter halo:
+xcom = sum(x*m)/sum(m)
+ycom = sum(y*m)/sum(m)
+zcom = sum(z*m)/sum(m)
+x = x - xcom
+y = y - ycom
+z = z - zcom
 
-xcom = sum(xhalo*mhalo)/sum(mhalo)
-ycom = sum(yhalo*mhalo)/sum(mhalo)
-zcom = sum(zhalo*mhalo)/sum(mhalo)
-xhalo = xhalo - xcom
-yhalo = yhalo - ycom
-zhalo = zhalo - zcom
-
-vxcom = sum(vxhalo*mhalo)/sum(mhalo)
-vycom = sum(vyhalo*mhalo)/sum(mhalo)
-vzcom = sum(vzhalo*mhalo)/sum(mhalo)
-vxhalo = vxhalo - vxcom
-vyhalo = vyhalo - vycom
-vzhalo = vzhalo - vzcom
-
-#gas:
-
-if (gas):
-    xcom = sum(x*m)/sum(m)
-    ycom = sum(y*m)/sum(m)
-    zcom = sum(z*m)/sum(m)
-    x = x - xcom
-    y = y - ycom
-    z = z - zcom
-
-    vxcom = sum(vx*m)/sum(m)
-    vycom = sum(vy*m)/sum(m)
-    vzcom = sum(vz*m)/sum(m)
-    vx = vx - vxcom
-    vy = vy - vycom
-    vz = vz - vzcom
-
-#disk:
-
-xcom = sum(xdisk*mdisk)/sum(mdisk)
-ycom = sum(ydisk*mdisk)/sum(mdisk)
-zcom = sum(zdisk*mdisk)/sum(mdisk)
-xdisk = xdisk - xcom
-ydisk = ydisk - ycom
-zdisk = zdisk - zcom
-
-vxcom = sum(vxdisk*mdisk)/sum(mdisk)
-vycom = sum(vydisk*mdisk)/sum(mdisk)
-vzcom = sum(vzdisk*mdisk)/sum(mdisk)
-vxdisk = vxdisk - vxcom
-vydisk = vydisk - vycom
-vzdisk = vzdisk - vzcom
-
-#bulge:
-
-xcom = sum(xbulge*mbulge)/sum(mbulge)
-ycom = sum(ybulge*mbulge)/sum(mbulge)
-zcom = sum(zbulge*mbulge)/sum(mbulge)
-xbulge = xbulge - xcom
-ybulge = ybulge - ycom
-zbulge = zbulge - zcom
-
-vxcom = sum(vxbulge*mbulge)/sum(mbulge)
-vycom = sum(vybulge*mbulge)/sum(mbulge)
-vzcom = sum(vzbulge*mbulge)/sum(mbulge)
-vxbulge = vxbulge - vxcom
-vybulge = vybulge - vycom
-vzbulge = vzbulge - vzcom
+vxcom = sum(vx*m)/sum(m)
+vycom = sum(vy*m)/sum(m)
+vzcom = sum(vz*m)/sum(m)
+vx = vx - vxcom
+vy = vy - vycom
+vz = vz - vzcom
 
 #-------------------------------------------------
 #shapes and ids
 
-if (gas):
-    pos = np.column_stack((x, y, z))
-    pos.shape = (-1, 1)
+pos = np.column_stack((x, y, z))
+pos.shape = (-1, 1)
 
-    vel = np.column_stack((vx, vy, vz))
-    vel.shape = (-1, 1)
+vel = np.column_stack((vx, vy, vz))
+vel.shape = (-1, 1)
 
+print('pos.shape: ', pos.shape)
+print('pos.shape: ', pos.shape)
+
+if gas & bulge:
     ids  = arange(0, Ngas + Nhalo + Ndisk + Nbulge, 1)
     hsml = np.zeros(Ngas)
 
-else:
-    x = concatenate([xhalo,xdisk])
-    y = concatenate([yhalo,ydisk])
-    z = concatenate([zhalo,zdisk])
-
-    vx = concatenate([vxhalo,vxdisk])
-    vy = concatenate([vyhalo,vydisk])
-    vz = concatenate([vzhalo,vzdisk])
-
-    m = concatenate([mhalo, mdisk])
-    print('m: ', m)
-
-    pos = np.column_stack((x, y, z))
-    pos.shape = (-1, 1)
-    print('pos.shape: ', pos.shape)
-
-    vel = np.column_stack((vx, vy, vz))
-    vel.shape = (-1, 1)
-    print('vel.shape: ', vel.shape)
-
-    N = Nhalo+Ndisk
+if bulge:
+    N = Nhalo + Ndisk + Nbulge
     ids = arange(0, N, 1)
-    print('ids.shape: ', ids.shape)
+
+else:
+    N = Nhalo + Ndisk
+    ids = arange(0, N, 1)
+
+print('ids.shape: ', ids.shape)
+
 #------------------------------------------------------
 #write output
 
-if (gas):
-    write_snapshot(n_part=[Ngas, Nhalo, Ndisk, 0, 0, 0], from_text=False, outfile=output, data_list=[pos, vel, ids, m, u, rho, hsml])
+if gas & bulge:
+    write_snapshot(n_part=[Ngas, Nhalo, Ndisk, Nbulge, 0, 0], from_text=False, outfile=output, data_list=[pos, vel, ids, m, u, rho, hsml])
+if bulge:
+    write_snapshot(n_part=[0, Nhalo, Ndisk, Nbulge, 0, 0], from_text=False, outfile=output, data_list=[pos, vel, ids, m])
 else:
     write_snapshot(n_part=[0, Nhalo, Ndisk, 0, 0, 0], from_text=False, outfile=output, data_list=[pos, vel, ids, m])
 #------------------------------------------------------

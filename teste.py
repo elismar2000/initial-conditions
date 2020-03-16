@@ -1,11 +1,26 @@
-from numpy import *
-from pygadgetreader import *
+import numpy as np
+import matplotlib.pyplot as plt
 
-snapshot = '/home/elismar/Documentos/Fisica/IC/Workshop_UTFPr/galstep/galstep/ICs/ICs_wGas_noBulge/snapshot_0000'
+n = 2000
+y = np.vstack((np.random.sample(n) * 2, np.random.sample(n)))
+x = np.zeros(n)
 
-posbulge = readsnap(snapshot, 'pos', 'bulge')
+from mpl_toolkits.mplot3d import Axes3D
+fig = plt.figure()
+ax1 = fig.add_subplot(111, projection='3d')
+ax1.plot(y[0], y[1], x, '.', zdir='z')
 
-header = readheader(snapshot2,'header')
-Nbulge = header['nbulge']
+y = np.vstack((y[0], y[1], x))
 
-print(posbulge, Nbulge)
+theta = -np.pi / 3
+phi = np.pi / 6
+
+Rx = np.array([[1, 0, 0], [0, np.cos(theta), -np.sin(theta)], [0, np.sin(theta), np.cos(theta)]])
+Rz = np.array([[np.cos(phi), -np.sin(phi), 0], [np.sin(phi), np.cos(phi), 0], [0, 0, 1]])
+
+y = np.matmul(Rz, y)
+y = np.matmul(Rx, y)
+
+ax1.plot(y[0], y[1], y[2], '.', zdir='z')
+ax1.set_aspect('equal')
+plt.show()
