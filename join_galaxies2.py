@@ -44,6 +44,20 @@ vxhalo1 = velhalo1[:, 0]
 vyhalo1 = velhalo1[:, 1]
 vzhalo1 = velhalo1[:, 2]
 
+#disk:
+
+posdisk1 = readsnap(snapshot1,'pos','disk')
+veldisk1 = readsnap(snapshot1,'vel','disk')
+mdisk1   = readsnap(snapshot1,'mass','disk')
+
+xdisk1 = posdisk1[:, 0]
+ydisk1 = posdisk1[:, 1]
+zdisk1 = posdisk1[:, 2]
+
+vxdisk1 = veldisk1[:, 0]
+vydisk1 = veldisk1[:, 1]
+vzdisk1 = veldisk1[:, 2]
+
 #gas:
 
 gas1 = False
@@ -65,27 +79,13 @@ if gas1:
     vygas1  = velgas1[:, 1]
     vzgas1  = velgas1[:, 2]
 
-#disk:
-
-posdisk1 = readsnap(snapshot1,'pos','disk')
-veldisk1 = readsnap(snapshot1,'vel','disk')
-mdisk1   = readsnap(snapshot1,'mass','disk')
-
-xdisk1 = posdisk1[:, 0]
-ydisk1 = posdisk1[:, 1]
-zdisk1 = posdisk1[:, 2]
-
-vxdisk1 = veldisk1[:, 0]
-vydisk1 = veldisk1[:, 1]
-vzdisk1 = veldisk1[:, 2]
-
 #bulge:
 
 bulge1 = False
 if Nbulge1 > 0:
     bulge1 = True
 
-if bulge:
+if bulge1:
     posbulge1 = readsnap(snapshot1, 'pos', 'bulge')
     velbulge1 = readsnap(snapshot1, 'vel', 'bulge')
     mbulge1 = readsnap(snapshot1, 'mass', 'bulge')
@@ -119,25 +119,6 @@ vxhalo2 = velhalo2[:, 0]
 vyhalo2 = velhalo2[:, 1]
 vzhalo2 = velhalo2[:, 2]
 
-#gas:
-
-gas2 = False
-if Ngas2 > 0:
-    gas2 = True
-
-if (gas):
-    posgas2 = readsnap(snapshot2,'pos','gas')
-    velgas2 = readsnap(snapshot2,'vel','gas')
-    mgas2   = readsnap(snapshot2,'mass','gas')
-    u2      = readsnap(snapshot2,'u'  ,'gas')
-    rho2    = readsnap(snapshot2,'rho','gas')
-    xgas2   = posgas2[:, 0]
-    ygas2   = posgas2[:, 1]
-    zgas2   = posgas2[:, 2]
-    vxgas2  = velgas2[:, 0]
-    vygas2  = velgas2[:, 1]
-    vzgas2  = velgas2[:, 2]
-
 #disk:
 
 posdisk2 = readsnap(snapshot2,'pos','disk')
@@ -151,13 +132,32 @@ vxdisk2 = veldisk2[:, 0]
 vydisk2 = veldisk2[:, 1]
 vzdisk2 = veldisk2[:, 2]
 
+#gas:
+
+gas2 = False
+if Ngas2 > 0:
+    gas2 = True
+
+if gas2:
+    posgas2 = readsnap(snapshot2,'pos','gas')
+    velgas2 = readsnap(snapshot2,'vel','gas')
+    mgas2   = readsnap(snapshot2,'mass','gas')
+    u2      = readsnap(snapshot2,'u'  ,'gas')
+    rho2    = readsnap(snapshot2,'rho','gas')
+    xgas2   = posgas2[:, 0]
+    ygas2   = posgas2[:, 1]
+    zgas2   = posgas2[:, 2]
+    vxgas2  = velgas2[:, 0]
+    vygas2  = velgas2[:, 1]
+    vzgas2  = velgas2[:, 2]
+
 #bulge:
 
 bulge2 = False
 if Nbulge2 > 0:
     bulge2 = True
 
-if bulge:
+if bulge2:
     posbulge2 = readsnap(snapshot2, 'pos', 'bulge')
     velbulge2 = readsnap(snapshot2, 'vel', 'bulge')
     mbulge2 = readsnap(snapshot2, 'mass', 'bulge')
@@ -177,14 +177,14 @@ if gas1 & gas2:
     gas = True
 
 else:
-    print("Uma das galáxias não tem gás")
+    print("At least one of the galaxies has no gas")
 
 bulge = False
 if bulge1 & bulge2:
     bulge = True
 
 else:
-    print("Uma das galáxias não tem bojo")
+    print("At least one of the galaxies has no bulge")
 
 #-------------------------------------------------
 #shift positions and velocities:
@@ -198,6 +198,15 @@ vxhalo2 = vxhalo2 + float(Dvx)
 vyhalo2 = vyhalo2 + float(Dvy)
 vzhalo2 = vzhalo2 + float(Dvz)
 
+#disk:
+
+xdisk2  = xdisk2  + float(Dx)
+ydisk2  = ydisk2  + float(Dy)
+zdisk2  = zdisk2  + float(Dz)
+vxdisk2 = vxdisk2 + float(Dvx)
+vydisk2 = vydisk2 + float(Dvy)
+vzdisk2 = vzdisk2 + float(Dvz)
+
 #gas:
 
 if gas2:
@@ -207,15 +216,6 @@ if gas2:
     vxgas2 = vxgas2 + float(Dvx)
     vygas2 = vygas2 + float(Dvy)
     vzgas2 = vzgas2 + float(Dvz)
-
-#disk:
-
-xdisk2  = xdisk2  + float(Dx)
-ydisk2  = ydisk2  + float(Dy)
-zdisk2  = zdisk2  + float(Dz)
-vxdisk2 = vxdisk2 + float(Dvx)
-vydisk2 = vydisk2 + float(Dvy)
-vzdisk2 = vzdisk2 + float(Dvz)
 
 #bulge:
 
@@ -254,7 +254,7 @@ vzdisk = concatenate([vzdisk1, vzdisk2])
 
 #gas:
 
-if gas & bulge:
+if (gas == True) & (bulge == True):
     Ngas   = Ngas1 + Ngas2
     mgas = concatenate([mgas1, mgas2])
     xgas = concatenate([xgas1, xgas2])
@@ -266,6 +266,15 @@ if gas & bulge:
     u     = concatenate([u1, u2])
     rho   = concatenate([rho1, rho2])
 
+    Nbulge   = Nbulge1 + Nbulge2
+    mbulge = concatenate([mbulge1, mbulge2])
+    xbulge = concatenate([xbulge1, xbulge2])
+    ybulge = concatenate([ybulge1, ybulge2])
+    zbulge = concatenate([zbulge1, zbulge2])
+    vxbulge = concatenate([vxbulge1, vxbulge2])
+    vybulge = concatenate([vybulge1, vybulge2])
+    vzbulge = concatenate([vzbulge1, vzbulge2])
+
     m  = concatenate([mgas, mhalo, mdisk, mbulge])
     x  = concatenate([xgas, xhalo,  xdisk, xbulge])
     y  = concatenate([ygas, yhalo,  ydisk, ybulge])
@@ -276,7 +285,7 @@ if gas & bulge:
 
 #bulge:
 
-if bulge:
+if (bulge == True) & (gas == False):
     Nbulge   = Nbulge1 + Nbulge2
     mbulge = concatenate([mbulge1, mbulge2])
     xbulge = concatenate([xbulge1, xbulge2])
@@ -286,7 +295,7 @@ if bulge:
     vybulge = concatenate([vybulge1, vybulge2])
     vzbulge = concatenate([vzbulge1, vzbulge2])
 
-    m = concantenate([mhalo, mdisk, mbulge])
+    m = concatenate([mhalo, mdisk, mbulge])
     x = concatenate([xhalo, xdisk, xbulge])
     y = concatenate([yhalo, ydisk, ybulge])
     z = concatenate([zhalo, zdisk, zbulge])
@@ -294,7 +303,7 @@ if bulge:
     vy = concatenate([vyhalo, vydisk, vybulge])
     vz = concatenate([vzhalo, vzdisk, vzbulge])
 
-else:
+if (bulge == False) & (gas == False):
     m = concatenate([mhalo, mdisk])
     x = concatenate([xhalo, xdisk])
     y = concatenate([yhalo, ydisk])
@@ -330,29 +339,38 @@ vel = np.column_stack((vx, vy, vz))
 vel.shape = (-1, 1)
 
 print('pos.shape: ', pos.shape)
-print('pos.shape: ', pos.shape)
+print('vel.shape: ', vel.shape)
+print('m.shape: ', m.shape)
 
-if gas & bulge:
+if (gas == True) & (bulge == True):
     ids  = arange(0, Ngas + Nhalo + Ndisk + Nbulge, 1)
     hsml = np.zeros(Ngas)
 
-if bulge:
+if (bulge == True) & (gas == False):
     N = Nhalo + Ndisk + Nbulge
     ids = arange(0, N, 1)
 
-else:
+if (bulge == False) & (gas == False):
     N = Nhalo + Ndisk
     ids = arange(0, N, 1)
 
 print('ids.shape: ', ids.shape)
 
+print('bulge included? ', bulge)
+print('gas included? ', gas)
+
 #------------------------------------------------------
 #write output
 
-if gas & bulge:
+if (gas == True) & (bulge == True):
+    print('With gas and bulge')
     write_snapshot(n_part=[Ngas, Nhalo, Ndisk, Nbulge, 0, 0], from_text=False, outfile=output, data_list=[pos, vel, ids, m, u, rho, hsml])
-if bulge:
+
+if (bulge == True) & (gas == False):
+    print('With bulge but no gas')
     write_snapshot(n_part=[0, Nhalo, Ndisk, Nbulge, 0, 0], from_text=False, outfile=output, data_list=[pos, vel, ids, m])
-else:
+
+if (bulge == False) & (gas == False):
+    print('Without gas nor bulge')
     write_snapshot(n_part=[0, Nhalo, Ndisk, 0, 0, 0], from_text=False, outfile=output, data_list=[pos, vel, ids, m])
 #------------------------------------------------------
