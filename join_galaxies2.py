@@ -139,18 +139,12 @@ if Ngas2 > 0:
     gas2 = True
 
 if gas2:
-<<<<<<< HEAD
-    posgas2 = readsnap(snapshot2, 'pos','gas')
-    velgas2 = readsnap(snapshot2, 'vel','gas')
-    mgas2   = readsnap(snapshot2, 'mass','gas')
-    u2      = readsnap(snapshot2, 'u' ,'gas')
-=======
     posgas2 = readsnap(snapshot2,'pos','gas')
     velgas2 = readsnap(snapshot2,'vel','gas')
     mgas2   = readsnap(snapshot2,'mass','gas')
     u2      = readsnap(snapshot2,'u'  ,'gas')
->>>>>>> 5811d0941e29aca6b2bccb8d60350ff268eaf8d2
     rho2    = readsnap(snapshot2,'rho','gas')
+
     xgas2   = posgas2[:, 0]
     ygas2   = posgas2[:, 1]
     zgas2   = posgas2[:, 2]
@@ -350,8 +344,7 @@ print('vel.shape: ', vel.shape)
 print('m.shape: ', m.shape)
 
 if (gas == True) & (bulge == True):
-    N = Ngas + Nhalo + Ndisk + Nbulge
-    ids  = arange(0, N, 1)
+    ids  = arange(0, Ngas + Nhalo + Ndisk + Nbulge, 1)
     hsml = np.zeros(Ngas)
 
 if (bulge == True) & (gas == False):
