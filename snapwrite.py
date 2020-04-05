@@ -125,8 +125,8 @@ def write_snapshot(n_part, folder=None, from_text=True, data_list=None,
         mass_data = data_list[3]
         if(N_gas > 0):
             U_data = data_list[4]
-            #rho_data = data_list[5]
-            #smoothing_data = data_list[6]
+            rho_data = data_list[5]
+            smoothing_data = data_list[6]
 
     write_block(f, header_data, None, 'HEAD')
     write_block(f, pos_data, 'f', 'POS ')
@@ -135,6 +135,6 @@ def write_snapshot(n_part, folder=None, from_text=True, data_list=None,
     write_block(f, mass_data, 'f', 'MASS')
     if(N_gas > 0):
         write_block(f, U_data, 'f', 'U   ')
-        #write_block(f, rho_data, 'f', 'RHO ')
-        #write_block(f, smoothing_data, 'f', 'HSML')
+        write_block(f, rho_data, 'f', 'RHO ')
+        write_block(f, smoothing_data, 'f', 'HSML')
     f.close()
