@@ -139,10 +139,17 @@ if Ngas2 > 0:
     gas2 = True
 
 if gas2:
+<<<<<<< HEAD
     posgas2 = readsnap(snapshot2, 'pos','gas')
     velgas2 = readsnap(snapshot2, 'vel','gas')
     mgas2   = readsnap(snapshot2, 'mass','gas')
     u2      = readsnap(snapshot2, 'u' ,'gas')
+=======
+    posgas2 = readsnap(snapshot2,'pos','gas')
+    velgas2 = readsnap(snapshot2,'vel','gas')
+    mgas2   = readsnap(snapshot2,'mass','gas')
+    u2      = readsnap(snapshot2,'u'  ,'gas')
+>>>>>>> 5811d0941e29aca6b2bccb8d60350ff268eaf8d2
     rho2    = readsnap(snapshot2,'rho','gas')
     xgas2   = posgas2[:, 0]
     ygas2   = posgas2[:, 1]
@@ -358,8 +365,6 @@ if (bulge == False) & (gas == False):
 print('ids.shape: ', ids.shape)
 print('bulge included? ', bulge)
 print('gas included? ', gas)
-
-import pdb; pdb.set_trace()
 #------------------------------------------------------
 #write output
 
