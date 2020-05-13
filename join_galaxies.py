@@ -29,9 +29,9 @@ Nhalo1 = header['ndm']
 Ngas1  = header['ngas']
 Ndisk1 = header['ndisk']
 
-poshalo1 = readsnap(snapshot1,'pos','dm')
-velhalo1 = readsnap(snapshot1,'vel','dm')
-mhalo1   = readsnap(snapshot1,'mass','dm')
+poshalo1 = readsnap(snapshot1, 'pos', 'dm')
+velhalo1 = readsnap(snapshot1, 'vel', 'dm')
+mhalo1   = readsnap(snapshot1, 'mass', 'dm')
 
 xhalo1 = poshalo1[:, 0]
 yhalo1 = poshalo1[:, 1]

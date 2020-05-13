@@ -7,177 +7,124 @@ from pygadgetreader import *
 from snapwrite import process_input, write_snapshot
 import sys
 
-output1 = sys.argv[1]
-output2 = sys.argv[2]
-
-t_path = '/home/elismar/Documentos/Fisica/IC/GalMer/inflow/Tabelas_GalMer/tables_arp245_orbit1'
-t = Table.read(t_path, 1)
-
-#===============================
-#Setting maks for galaxies and particles types
-#===============================
-
-gal1 = t['GAL'] == 1
-gal2 = t['GAL'] == 2
-
-gas1 = t['P_TYPE'][gal1] == 0
-gas2 = t['P_TYPE'][gal2] == 0
-star1 = t['P_TYPE'][gal1] == 1
-star2 = t['P_TYPE'][gal2] == 1
-dm1 = t['P_TYPE'][gal1] == 2
-dm2 = t['P_TYPE'][gal2] == 2
-
-#==============================
-#Collecting positions of particles
-#==============================
-
-x_gas1 = t['X'][gal1][gas1]
-y_gas1 = t['Y'][gal1][gas1]
-z_gas1 = t['Z'][gal1][gas1]
-
-x_gas2 = t['X'][gal2][gas2]
-y_gas2 = t['Y'][gal2][gas2]
-z_gas2 = t['Z'][gal2][gas2]
-
-x_star1 = t['X'][gal1][star1][0:48000]
-y_star1 = t['Y'][gal1][star1][0:48000]
-z_star1 = t['Z'][gal1][star1][0:48000]
-
-x_star2 = t['X'][gal2][star2][0:48000]
-y_star2 = t['Y'][gal2][star2][0:48000]
-z_star2 = t['Z'][gal2][star2][0:48000]
-
-x_bulge1 = t['X'][gal1][star1][48000:60000]
-y_bulge1 = t['Y'][gal1][star1][48000:60000]
-z_bulge1 = t['Z'][gal1][star1][48000:60000]
-
-x_bulge2 = t['X'][gal2][star2][48000:60000]
-y_bulge2 = t['Y'][gal2][star2][48000:60000]
-z_bulge2 = t['Z'][gal2][star2][48000:60000]
-
-x_dm1 = t['X'][gal1][dm1]
-y_dm1 = t['Y'][gal1][dm1]
-z_dm1 = t['Z'][gal1][dm1]
-
-x_dm2 = t['X'][gal2][dm2]
-y_dm2 = t['Y'][gal2][dm2]
-z_dm2 = t['Z'][gal2][dm2]
-
-#==================================
-#Collecting velocities of particles
-#==================================
-
-vx_gas1 = t['VX'][gal1][gas1]
-vy_gas1 = t['VY'][gal1][gas1]
-vz_gas1 = t['VZ'][gal1][gas1]
-
-vx_gas2 = t['VX'][gal2][gas2]
-vy_gas2 = t['VY'][gal2][gas2]
-vz_gas2 = t['VZ'][gal2][gas2]
-
-vx_star1 = t['VX'][gal1][star1][0:48000]
-vy_star1 = t['VY'][gal1][star1][0:48000]
-vz_star1 = t['VZ'][gal1][star1][0:48000]
-
-vx_star2 = t['VX'][gal2][star2][0:48000]
-vy_star2 = t['VY'][gal2][star2][0:48000]
-vz_star2 = t['VZ'][gal2][star2][0:48000]
-
-vx_bulge1 = t['VX'][gal1][star1][48000:60000]
-vy_bulge1 = t['VY'][gal1][star1][48000:60000]
-vz_bulge1 = t['VZ'][gal1][star1][48000:60000]
-
-vx_bulge2 = t['VX'][gal2][star2][48000:60000]
-vy_bulge2 = t['VY'][gal2][star2][48000:60000]
-vz_bulge2 = t['VZ'][gal2][star2][48000:60000]
-
-vx_dm1 = t['VX'][gal1][dm1]
-vy_dm1 = t['VY'][gal1][dm1]
-vz_dm1 = t['VZ'][gal1][dm1]
-
-vx_dm2 = t['VX'][gal2][dm2]
-vy_dm2 = t['VY'][gal2][dm2]
-vz_dm2 = t['VZ'][gal2][dm2]
-
-#================================
-#Collecting masses of particles
-#================================
-
-m_gas1 = t['MASS'][gal1][gas1]
-
-m_gas2 = t['MASS'][gal2][gas2]
-
-m_star1 = t['MASS'][gal1][star1][0:48000]
-
-m_star2 = t['MASS'][gal2][star2][0:48000]
-
-m_bulge1 = t['MASS'][gal1][star1][48000:60000]
-
-m_bulge2 = t['MASS'][gal2][star2][48000:60000]
-
-m_dm1 = t['MASS'][gal1][dm1]
-
-m_dm2 = t['MASS'][gal2][dm2]
-
 #================================
 #U and rho vectors for SPH particles
 #================================
 
-snapshot = '/home/elismar/Documentos/Fisica/IC/simulations_ICs/ICs/gSa_galaxies/snapshot0000'
+snapshot = '/home/elismar/Documentos/Fisica/IC/simulations_ICs/ICs/galmer_galaxies/gal_col.ini'
 u = readsnap(snapshot, 'u', 'gas')
 rho = readsnap(snapshot, 'rho', 'gas')
 
-#================================
-#Concatenating vectors for different galaxy components
-#================================
+t_path = '/home/elismar/Documentos/Fisica/IC/GalMer/inflow/Tabelas_GalMer/tables_arp245_orbit1'
 
-m1 = np.concatenate((m_gas1, m_dm1, m_star1, m_bulge1))
-x1 = np.concatenate((x_gas1, x_dm1, x_star1, x_bulge1))
-y1 = np.concatenate((y_gas1, y_dm1, y_star1, y_bulge1))
-z1 = np.concatenate((z_gas1, z_dm1, z_star1, z_bulge1))
-vx1 = np.concatenate((vx_gas1, vx_dm1, vx_star1, vx_bulge1))
-vy1 = np.concatenate((vy_gas1, vy_dm1, vy_star1, vy_bulge1))
-vz1 = np.concatenate((vz_gas1, vz_dm1, vz_star1, vz_bulge1))
+for snapshot in range(1, 72):
+    output = 'snapshot_' + '%03d' % (snapshot,)
+    t = Table.read(t_path, snapshot)
 
-m2 = np.concatenate((m_gas2, m_dm2, m_star2, m_bulge2))
-x2 = np.concatenate((x_gas2, x_dm2, x_star2, x_bulge2))
-y2 = np.concatenate((y_gas2, y_dm2, y_star2, y_bulge2))
-z2 = np.concatenate((z_gas2, z_dm2, z_star2, z_bulge2))
-vx2 = np.concatenate((vx_gas2, vx_dm2, vx_star2, vx_bulge2))
-vy2 = np.concatenate((vy_gas2, vy_dm2, vy_star2, vy_bulge2))
-vz2 = np.concatenate((vz_gas2, vz_dm2, vz_star2, vz_bulge2))
+    #===============================
+    #Setting masks for galaxies and particle types
+    #===============================
 
-#=================================
-#Stacking position and velocity vectors
-#=================================
+    gas = t['P_TYPE'] == 0
+    star = t['P_TYPE'] == 1
+    dm = t['P_TYPE'] == 2
 
-pos1 = np.column_stack((x1, y1, z1))
-pos1.shape = (-1, 1)
+    #==============================
+    #Collecting positions of particles
+    #==============================
 
-pos2 = np.column_stack((x2, y2, z2))
-pos2.shape = (-1, 1)
+    h = 0.75
+    lf = h
 
-vel1 = np.column_stack((vx1, vy1, vz1))
-vel1.shape = (-1, 1)
+    x_gas = t['X'][gas] * lf
+    y_gas = t['Y'][gas] * lf
+    z_gas = t['Z'][gas] * lf
 
-vel2 = np.column_stack((vx2, vy2, vz2))
-vel2.shape = (-1, 1)
+    x_star = np.concatenate((t['X'][star][0:48000], t['X'][star][60000:108000])) * lf
+    y_star = np.concatenate((t['Y'][star][0:48000], t['Y'][star][60000:108000])) * lf
+    z_star = np.concatenate((t['Z'][star][0:48000], t['Z'][star][60000:108000])) * lf
 
-#==================================
-#number of particles, ids and hsml
-#==================================
+    x_bulge = np.concatenate((t['X'][star][48000:60000], t['X'][star][108000:120000])) * lf
+    y_bulge = np.concatenate((t['Y'][star][48000:60000], t['Y'][star][108000:120000])) * lf
+    z_bulge = np.concatenate((t['Z'][star][48000:60000], t['Z'][star][108000:120000])) * lf
 
-Ngas = 20000
-Ndm = 40000
-Nstar = 48000
-Nbulge = 12000
-N = Ngas + Ndm + Nstar + Nbulge
-ids  = np.arange(0, N, 1)
-hsml = np.zeros(Ngas)
+    x_dm = t['X'][dm] * lf
+    y_dm = t['Y'][dm] * lf
+    z_dm = t['Z'][dm] * lf
 
-#==================================
-#Writing snapshots in gadget format
-#==================================
-#import pdb; pdb.set_trace()
-write_snapshot(n_part=[Ngas, Ndm, Nstar, Nbulge, 0, 0], from_text=False, outfile=output1, data_list=[pos1, vel1, ids, m1, u, rho, hsml])
-write_snapshot(n_part=[Ngas, Ndm, Nstar, Nbulge, 0, 0], from_text=False, outfile=output2, data_list=[pos2, vel2, ids, m2, u, rho, hsml])
+    #==================================
+    #Collecting velocities of particles
+    #==================================
+
+    vx_gas = t['VX'][gas]
+    vy_gas = t['VY'][gas]
+    vz_gas = t['VZ'][gas]
+
+    vx_star = np.concatenate((t['VX'][star][0:48000], t['VX'][star][60000:108000]))
+    vy_star = np.concatenate((t['VY'][star][0:48000], t['VY'][star][60000:108000]))
+    vz_star = np.concatenate((t['VZ'][star][0:48000], t['VZ'][star][60000:108000]))
+
+    vx_bulge = np.concatenate((t['VX'][star][48000:60000], t['VX'][star][108000:120000]))
+    vy_bulge = np.concatenate((t['VY'][star][48000:60000], t['VY'][star][108000:120000]))
+    vz_bulge = np.concatenate((t['VZ'][star][48000:60000], t['VZ'][star][108000:120000]))
+
+    vx_dm = t['VX'][dm]
+    vy_dm = t['VY'][dm]
+    vz_dm = t['VZ'][dm]
+
+    #================================
+    #Collecting masses of particles
+    #================================
+
+    mf = 2.25 * h / 10.0
+
+    m_gas = t['MASS'][gas] * mf
+
+    m_star = np.concatenate((t['MASS'][star][0:48000], t['MASS'][star][60000:108000])) * mf
+
+    m_bulge = np.concatenate((t['MASS'][star][48000:60000], t['MASS'][star][108000:120000])) * mf
+
+    print(m_star.shape)
+    print(m_bulge.shape)
+
+    m_dm = t['MASS'][dm] * mf
+
+    #================================
+    #Concatenating vectors for different galaxy components
+    #================================
+
+    m = np.concatenate((m_gas, m_dm, m_star, m_bulge))
+    x = np.concatenate((x_gas, x_dm, x_star, x_bulge))
+    y = np.concatenate((y_gas, y_dm, y_star, y_bulge))
+    z = np.concatenate((z_gas, z_dm, z_star, z_bulge))
+    vx = np.concatenate((vx_gas, vx_dm, vx_star, vx_bulge))
+    vy = np.concatenate((vy_gas, vy_dm, vy_star, vy_bulge))
+    vz = np.concatenate((vz_gas, vz_dm, vz_star, vz_bulge))
+
+    #=================================
+    #Stacking position and velocity vectors
+    #=================================
+
+    pos = np.column_stack((x, y, z))
+    pos.shape = (-1, 1)
+
+    vel = np.column_stack((vx, vy, vz))
+    vel.shape = (-1, 1)
+
+    #==================================
+    #number of particles, ids and hsml
+    #==================================
+
+    Ngas = 40000
+    Ndm = 80000
+    Nstar = 96000
+    Nbulge = 24000
+    N = Ngas + Ndm + Nstar + Nbulge
+    ids  = np.arange(0, N, 1)
+    hsml = np.zeros(Ngas)
+
+    #==================================
+    #Writing snapshots in gadget format
+    #==================================
+
+    write_snapshot(n_part=[Ngas, Ndm, Nstar, Nbulge, 0, 0], from_text=False, outfile=output, data_list=[pos, vel, ids, m, u, rho, hsml])

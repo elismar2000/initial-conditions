@@ -5,7 +5,7 @@ from astropy.table import Table
 from numpy import *
 from pygadgetreader import *
 
-mode = 'Galmer'
+mode = 'Gadget'
 projection = '3D'
 
 cmap = plt.get_cmap('plasma')
@@ -74,7 +74,7 @@ if mode == 'Galmer':
 
 
 if mode == 'Gadget':
-    snapshot = '/home/elismar/Documentos/Fisica/IC/simulations_ICs/ICs/gSa_galaxies/gal_col.ini2'
+    snapshot = '/home/elismar/Documentos/Fisica/IC/simulations_ICs/ICs/galmer_galaxies/gal_col.ini'
 
     pos_disk = readsnap(snapshot, 'pos', 'disk')
     x_disk = pos_disk[:, 0]
