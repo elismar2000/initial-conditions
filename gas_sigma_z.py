@@ -31,9 +31,6 @@ z_edges += z_bin / 2
 #Fitting model
 #=========================
 
-# Mgas = 0.92
-# sigma0 = Mgas / (4 * np.pi)
-
 def SigmaZ(z, z0, Mgas):
     sigma0 = Mgas / (4 * np.pi)
     return sigma0 / (np.cosh(z / z0)**2 * z0)
