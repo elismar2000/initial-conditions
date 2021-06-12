@@ -8,11 +8,11 @@ from snapwrite import process_input, write_snapshot
 import sys
 
 #-------------------------------------------------------
-snapshot = sys.argv[1]
-output = sys.argv[2]
-theta = sys.argv[3]
-sigma = sys.argv[4]
-phi = sys.argv[5]
+snapshot = sys.argv[1] #o snashot contendo a galaxia que eh pra ser rodada
+output = sys.argv[2] #o nome do output que a gente vai querer
+theta = sys.argv[3] #o angulo theta, em radianos
+sigma = sys.argv[4] #o angulo sigma, em radianos
+phi = sys.argv[5] #o angulo phi, em radianos
 #-------------------------------------------------------
 
 header = readheader(snapshot, 'header')
@@ -81,6 +81,13 @@ if plot:
     ax1 = fig.add_subplot(111, projection='3d')
     ax1.plot(x_disk, y_disk, z_disk, '.', zdir='z')
 #--------------------------------------------------------
+
+#theta --> girar ao redor de x
+#sigma --> girar ao redor de y
+#phi --> girar ao redor de z
+
+#o theta ou sigma sao equivalentes ao theta do sistema esferico. Uma vez que usa um, nao precisa do outro
+#porque o que importa eh que estamos realizando uma rotacao a partir de z
 
 theta = float(theta)
 sigma = float(sigma)

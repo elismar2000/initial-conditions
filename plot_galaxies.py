@@ -8,6 +8,9 @@ from pygadgetreader import *
 import sys
 from tables import *
 
+#mode: Galmer for a snapshot from GalMer or Gadget for snapshot in Gadget format
+#snap if to separate between the cases where there are two or one galaxy in the snapshot (before and after coalescence)
+
 snapshot   = sys.argv[1]
 mode       = sys.argv[2]
 projection = sys.argv[3]
@@ -102,14 +105,14 @@ if mode == 'Gadget':
         y = concatenate((y_disk, y_gas, y_bulge))
         z = concatenate((z_disk, z_gas, z_bulge))
 
-        mask1 = x > 0
-        mask2 = x < 0
-
         from mpl_toolkits.mplot3d import Axes3D
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
-        ax.plot(x[mask1], y[mask1], z[mask1], 'b,')
-        ax.plot(x[mask2], y[mask2], z[mask2], 'r,')
+        ax.plot(x, y, z, ',')
+        ax.set_xlabel('x (kpc)')
+        ax.set_ylabel('y (kpc)')
+        ax.set_zlabel('z (kpc)')
+        ax.set_aspect('equal')
 
     if projection == '2D':
         pos_disk = readsnap(snapshot, 'pos', 'disk')
