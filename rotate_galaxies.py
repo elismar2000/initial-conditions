@@ -10,9 +10,9 @@ import sys
 #-------------------------------------------------------
 snapshot = sys.argv[1] #o snashot contendo a galaxia que eh pra ser rodada
 output = sys.argv[2] #o nome do output que a gente vai querer
-theta = sys.argv[3] #o angulo theta, em radianos
-sigma = sys.argv[4] #o angulo sigma, em radianos
-phi = sys.argv[5] #o angulo phi, em radianos
+theta = np.deg2rad(float(sys.argv[3])) + np.pi/2 #position angle, em torno de z
+phi = np.deg2rad(float(sys.argv[4])) #inclinacao, em torno de x no sentido negativo
+inclination_axis = sys.argv[5] #x or y
 #-------------------------------------------------------
 
 header = readheader(snapshot, 'header')
@@ -73,38 +73,28 @@ vel_halo = np.vstack((vx_halo, vy_halo, vz_halo))
 vel_disk = np.vstack((vx_disk, vy_disk, vz_disk))
 vel_bulge = np.vstack((vx_bulge, vy_bulge, vz_bulge))
 
-#--------------------------------------------------------
-plot = False
-if plot:
-    from mpl_toolkits.mplot3d import Axes3D
-    fig = plt.figure()
-    ax1 = fig.add_subplot(111, projection='3d')
-    ax1.plot(x_disk, y_disk, z_disk, '.', zdir='z')
-#--------------------------------------------------------
+#=================================
+#Definindo os angulos
 
-#theta --> girar ao redor de x
-#sigma --> girar ao redor de y
-#phi --> girar ao redor de z
+#NGC 2992: P.A = 32, i = 70
+#=================================
 
-#o theta ou sigma sao equivalentes ao theta do sistema esferico. Uma vez que usa um, nao precisa do outro
-#porque o que importa eh que estamos realizando uma rotacao a partir de z
+print('theta in degrees (P.A + 90): ', np.rad2deg(theta))
+print('phi in degrees (inclination): ', np.rad2deg(phi))
 
-theta = float(theta)
-sigma = float(sigma)
-phi = float(phi)
-print('theta: ', theta)
-print('sigma: ', sigma)
-print('phi: ', phi)
+#=================================
+#Definindo as matrizes de rotacao
+#=================================
 
-if (theta != 0) and (sigma != 0):
-    raise Exception('Either theta or sigma must be zero')
+Rz = np.array([[np.cos(theta), -np.sin(theta), 0], [np.sin(theta), np.cos(theta), 0], [0, 0, 1]])
 
-Rx = np.array([[1, 0, 0], [0, np.cos(theta), -np.sin(theta)], [0, np.sin(theta), np.cos(theta)]])
-Ry = np.array([[np.cos(sigma), 0, np.sin(sigma)], [0, 1, 0], [-np.sin(sigma), 0, np.cos(sigma)]])
-Rz = np.array([[np.cos(phi), -np.sin(phi), 0], [np.sin(phi), np.cos(phi), 0], [0, 0, 1]])
+#=================================
+#Fazendo as rotacoes
+#=================================
 
-#Girando ao redor do eixo x
-if theta != 0:
+if inclination_axis == 'x':
+    Rx = np.array([[1, 0, 0], [0, np.cos(phi), -np.sin(phi)], [0, np.sin(phi), np.cos(phi)]])
+
     pos_gas = np.matmul(Rx, pos_gas)
     pos_gas = np.matmul(Rz, pos_gas)
 
@@ -130,8 +120,10 @@ if theta != 0:
     vel_bulge = np.matmul(Rx, vel_bulge)
     vel_bulge = np.matmul(Rz, vel_bulge)
 
-#Girando ao redor do eixo y
-if sigma != 0:
+
+if inclination_axis == 'y':
+    Ry = np.array([[np.cos(phi), 0, np.sin(phi)], [0, 1, 0], [-np.sin(phi), 0, np.cos(phi)]])
+
     pos_gas = np.matmul(Ry, pos_gas)
     pos_gas = np.matmul(Rz, pos_gas)
 
@@ -157,11 +149,24 @@ if sigma != 0:
     vel_bulge = np.matmul(Ry, vel_bulge)
     vel_bulge = np.matmul(Rz, vel_bulge)
 
+
 #---------------------------------------------------------
+plot = False
 if plot:
-    ax1.plot(x_disk, y_disk, z_disk, '.', zdir='z')
-    plt.show()
+    from mpl_toolkits.mplot3d import Axes3D
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.plot(x_disk, y_disk, z_disk, ',', zdir='z')
+    ax.set_xlabel('x (kpc)')
+    ax.set_ylabel('y (kpc)')
+    ax.set_zlabel('z (kpc)')
+    ax.set_aspect('equal')
+plt.show()
 #---------------------------------------------------------
+
+#=================================
+#Salvando os snapshots
+#=================================
 
 x_gas = pos_gas[0]
 y_gas = pos_gas[1]

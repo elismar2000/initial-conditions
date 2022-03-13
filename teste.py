@@ -1,12 +1,24 @@
+from pygadgetreader import *
 import matplotlib.pyplot as plt
 import numpy as np
-from pygadgetreader import *
+import glob
 
-snapshot = '/home/elismar/Documentos/Fisica/IC/Gadget2/Gadget-2.0.7/galaxy_collision_galmer_test/snapshot_000'
+v = glob.glob('/home/elismar/Documentos/Fisica/IC/queorbita/orbits_3rd_attempt/orb*/snapshot_*')
+v.sort()
 
-pot_gas = readsnap(snapshot, 'pot', 'gas')
-pot_halo = readsnap(snapshot, 'pot', 'dm')
-pot_disk = readsnap(snapshot, 'pot', 'disk')
-pot_bulge = readsnap(snapshot, 'pot', 'bulge')
+pos = readsnap(v[0], 'pos', 'gas')
 
-import pdb; pdb.set_trace()
+x = pos[:, 0]
+z = pos[:, 2]
+
+mask_ngc2992 = x < 50
+mask_ngc2993 = x > 50
+
+id_gas = readsnap(v[0], 'pid', 'gas')
+
+ngc2992 = np.isin(id_gas, id_gas[mask_ngc2992])
+ngc2993 = np.isin(id_gas, id_gas[mask_ngc2993])
+
+plt.scatter(x[ngc2992], z[ngc2992], color='purple', marker='.')
+plt.scatter(x[ngc2993], z[ngc2993], color='khaki', marker='.')
+plt.show()

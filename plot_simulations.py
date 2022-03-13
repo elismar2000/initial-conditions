@@ -64,5 +64,5 @@ for i in [1, 5, 9]:
             if (i == 9): axs[l, k].set_xlabel('Orbit type 9', fontsize=30)
 
 plt.subplots_adjust(wspace=-0.44, hspace=0)
-plt.savefig('simulation_plot.png')
-#plt.show()
+# plt.savefig('simulation_plot.png')
+plt.show()

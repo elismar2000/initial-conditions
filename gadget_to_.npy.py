@@ -1,12 +1,15 @@
-from pygadgetreader import *
-
 import numpy as np
+from pygadgetreader import *
+import sys
 
-for j in [0.05, 1, 2, 3]:
-    snapshot = int((j/0.05) + 1)
-    s = '%04d' % (snapshot,)
-    simulation = '/home/elismar/Documentos/Fisica/IC/Gadget3/simulation_galmer-like_test2/snapshot_' + str(s)
-    pos = readsnap(simulation, 'pos', 'gas')
+#Code to translate a gadget snapshot to .npy file in order to use sphviewer.tools (only works in python3),
+#avoiding conflicts with dependencies of pygadgetreader (only works in python2)
 
-    file = 'simulation_' + str(s)
-    np.save(file, pos)
+#This code must be run in python2, disabling anaconda environment
+
+gadget_snapshot = sys.argv[1]
+npy_file        = gadget_snapshot + '.npy'
+
+pos = readsnap(gadget_snapshot, 'pos', 'gas')
+
+np.save(npy_file, pos)

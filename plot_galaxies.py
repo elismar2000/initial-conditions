@@ -105,14 +105,18 @@ if mode == 'Gadget':
         y = concatenate((y_disk, y_gas, y_bulge))
         z = concatenate((z_disk, z_gas, z_bulge))
 
+        z_teste = 20.0
+
         from mpl_toolkits.mplot3d import Axes3D
         fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
-        ax.plot(x, y, z, ',')
-        ax.set_xlabel('x (kpc)')
-        ax.set_ylabel('y (kpc)')
-        ax.set_zlabel('z (kpc)')
-        ax.set_aspect('equal')
+
+        ax1 = fig.add_subplot(111, projection='3d')
+        ax1.plot(x, y, z, ',')
+        ax1.set_xlabel('x (kpc)')
+        ax1.set_ylabel('y (kpc)')
+        ax1.set_zlabel('z (kpc)')
+        ax1.scatter(0, 0, z_teste, color='red')
+        ax1.set_aspect('equal')
 
     if projection == '2D':
         pos_disk = readsnap(snapshot, 'pos', 'disk')
@@ -130,68 +134,22 @@ if mode == 'Gadget':
         y_bulge = pos_bulge[:, 1]
         z_bulge = pos_bulge[:, 2]
 
-        pos_star = readsnap(snapshot, 'pos', 'star')
-        x_star = pos_star[:, 0]
-        y_star = pos_star[:, 1]
-        z_star = pos_star[:, 2]
+        # pos_star = readsnap(snapshot, 'pos', 'star')
+        # x_star = pos_star[:, 0]
+        # y_star = pos_star[:, 1]
+        # z_star = pos_star[:, 2]
 
         x = concatenate((x_disk, x_gas, x_bulge))
         y = concatenate((y_disk, y_gas, y_bulge))
         z = concatenate((z_disk, z_gas, z_bulge))
 
-        pos_gas = stack((x_gas, y_gas, z_gas))
-        pos_star = stack((x_star, y_star, z_star))
-
-        mins = '/home/elismar/Documentos/Fisica/IC/GalMer/inflow/mins_Gadget/galmer-like_sim_test2_minima.h5'
-        h5file = open_file(mins, mode='r')
-        table = h5file.root.potential.readout
-
-        def dist(point1, point2):
-            d = np.sqrt(np.sum(np.square(point1[i] - point2[i]) for i in range(3)))
-            return d
-
-        if snap < 17:
-            xmin1 = np.array([j['xmin1'] for j in table.where('snapshot == snap')])
-            ymin1 = np.array([j['ymin1'] for j in table.where('snapshot == snap')])
-            zmin1 = np.array([j['zmin1'] for j in table.where('snapshot == snap')])
-            min1 = np.array([xmin1, ymin1, zmin1])
-
-            xmin2 = np.array([j['xmin2'] for j in table.where('snapshot == snap')])
-            ymin2 = np.array([j['ymin2'] for j in table.where('snapshot == snap')])
-            zmin2 = np.array([j['zmin2'] for j in table.where('snapshot == snap')])
-            min2 = np.array([xmin2, ymin2, zmin2])
-
-            dist1_gas = np.array([dist(pos_gas[:, i], min1) for i in range(len(pos_gas[0]))])[:, 0]
-            dist2_gas = np.array([dist(pos_gas[:, i], min2) for i in range(len(pos_gas[0]))])[:, 0]
-
-            dist1_star = np.array([dist(pos_star[:, i], min1) for i in range(len(pos_star[0]))])[:, 0]
-            dist2_star = np.array([dist(pos_star[:, i], min2) for i in range(len(pos_star[0]))])[:, 0]
-
-            mask1_gas = dist1_gas < 0.01
-            mask2_gas = dist2_gas < 0.01
-
-            mask1_star = dist1_star < 0.01
-            mask2_star = dist2_star < 0.01
-
-            plt.plot(x, y, 'b,')
-            plt.plot(x_gas[mask1_gas], y_gas[mask1_gas], '.', color='gold')
-            plt.plot(x_gas[mask2_gas], y_gas[mask2_gas], '.', color='gold')
-
-            plt.plot(x_star[mask1_star], y_star[mask1_star], '.', color='m')
-            plt.plot(x_star[mask2_star], y_star[mask2_star], '.', color='m')
-
-        if snap >= 17:
-            xmin = np.array([j['xmin'] for j in table.where('snapshot == snap')])
-            ymin = np.array([j['ymin'] for j in table.where('snapshot == snap')])
-            zmin = np.array([j['zmin'] for j in table.where('snapshot == snap')])
-            min = np.array([xmin, ymin, zmin])
-
-            dist = np.array([dist(pos_gas[:, i], min) for i in range(len(pos_gas[0]))])[:, 0]
-
-            mask = dist < 0.01
-
-            plt.plot(x, y, 'b,')
-            plt.plot(x_gas[mask], y_gas[mask], '.', color='red')
-
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        ax.plot(-y_disk, x_disk, ',', color='green')
+        # plt.plot(x_gas, y_gas, ',', color='yellow')
+        # plt.plot(x_bulge, y_bulge, ',', color='blue')
+        ax.set_xlabel('-y (kpc)')
+        ax.set_ylabel('x (kpc)')
+        ax.set_aspect('equal')
 
 plt.show()
